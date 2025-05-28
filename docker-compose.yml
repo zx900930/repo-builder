@@ -1,0 +1,13 @@
+version: '3.8'
+
+services:
+  repo-builder:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: triatk/repo-builder:${REPO_BUILDER_VERSION:-latest} # Use an env var for version, default to latest
+    volumes:
+      - ./out:/output  # Mount host's ./out directory to container's /output directory
+    # environment: # Optional: if you need to pass specific env vars to entrypoint.sh
+      # - MY_VARIABLE=some_value
+    # restart: 'no' # Default, container will stop after entrypoint finishes
