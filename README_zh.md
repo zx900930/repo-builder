@@ -175,7 +175,66 @@
         *   如果在构建期间使用了通过 HTTP 获取的密钥并设置 `gpgcheck=1`，您需要确保这些公共 GPG 密钥文件也已传输到**离线系统**，并通过 `gpgkey=` 正确引用（或手动导入到客户端的 RPM 数据库）。最简单的方法是确保 `gpgkey` 指向您提取的仓库结构中的 `file:///` 路径，如果您将密钥文件包含在那里。
         *   如果管理密钥对于您的场景来说过于复杂，请将 `gpgcheck` 设置为 `0` 以禁用 GPG 签名检查。
 
-4.  **清理缓存并验证：**
+    **如果您使用的是本项目提供的示例repo，可以用以下命令一键全部替换**:
+
+    ```bash
+    sudo bash -c " \
+    tee /etc/yum.repos.d/kylin_x86_64.repo > /dev/null << 'EOF_KYLIN'
+    ###Kylin Linux Advanced Server 10 - os repo###
+
+    [ks10-adv-os]
+    name = Kylin Linux Advanced Server 10 - Os
+    baseurl = file:///srv/local-repos/ks10-adv-os/
+    gpgcheck = 0
+    gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-kylin
+    enabled = 1
+
+    [ks10-adv-updates]
+    name = Kylin Linux Advanced Server 10 - Updates
+    baseurl = file:///srv/local-repos/ks10-adv-updates/
+    gpgcheck = 0
+    gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-kylin
+    enabled = 1
+
+    [ks10-adv-addons]
+    name = Kylin Linux Advanced Server 10 - Addons
+    baseurl = https://update.cs2c.com.cn/NS/V10/V10SP3/os/adv/lic/addons/\$basearch/
+    gpgcheck = 1
+    gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-kylin
+    enabled = 0
+    EOF_KYLIN
+    \
+    tee /etc/yum.repos.d/docker-ce.repo > /dev/null << 'EOF_DOCKER'
+    [docker-ce-stable]
+    name=Docker CE Stable - \$basearch
+    baseurl=file:///srv/local-repos/docker-ce-stable
+    enabled=1
+    gpgcheck=0
+    gpgkey=https://download.docker.com/linux/centos/gpg
+    EOF_DOCKER
+    \
+    tee /etc/yum.repos.d/nginx.repo > /dev/null << 'EOF_NGINX'
+    [nginx-stable]
+    name=nginx stable repo
+    baseurl=file:///srv/local-repos/nginx-stable/
+    gpgcheck=0
+    enabled=1
+    gpgkey=https://nginx.org/keys/nginx_signing.key
+    module_hotfixes=true
+
+    [nginx-mainline]
+    name=nginx mainline repo
+    baseurl=http://nginx.org/packages/mainline/centos/\$releasever/\$basearch/
+    gpgcheck=1
+    enabled=0
+    gpgkey=https://nginx.org/keys/nginx_signing.key
+    module_hotfixes=true
+    EOF_NGINX
+    "
+    ```
+    
+
+5.  **清理缓存并验证：**
     ```bash
     sudo dnf clean all  # 或 sudo yum clean all
     sudo dnf repolist   # 或 sudo yum repolist
