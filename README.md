@@ -1,5 +1,7 @@
 # Repo Builder for Offline YUM/DNF Repositories
 
+[简体中文](README_zh.md)
+
 A Docker-based tool to download RPM packages and their dependencies from configured YUM/DNF repositories and package them into a tarball. This tarball can then be transferred to an air-gapped environment to set up a local, offline repository.
 
 ## Features
